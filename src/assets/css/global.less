@@ -1,0 +1,13 @@
+.text_overflow(@radius:1) {
+    //限制行数超出隐藏
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: @radius;
+    line-clamp: @radius;
+    -webkit-box-orient: vertical;
+    /*直接放在类选择器里 例如：div{ .text_overflow; }*/
+    /*直接 .text_overflow;调用  默认为1*/
+    /*也可以 .text_overflow(3);调用 */
+  }
