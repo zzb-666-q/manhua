@@ -15,29 +15,12 @@
     </div>
     <div class="classify-result">
       <comicList :list.sync="classifyResult"></comicList>
-
-      <!-- <div class="classify-result-list">
-        <div class="classify-result-list-item" v-for="(item, i) in classifyResult" :key="i"
-          @click="getId(item.season_id)">
-          <div class="classify-result-list-item-img">
-            <img :src="item.vertical_cover" alt="" />
-          </div>
-          <div class="text">{{ item.title }}</div>
-          <div class="ord">
-            {{ item.is_finish == 0 ? "更新至" : "[完结] 共" }}
-            {{ item.last_ord }} 话
-          </div>
-        </div>
-      </div> -->
     </div>
     <div class="empty">
       <el-empty v-if="classifyResult.length == 0" description="暂无数据"></el-empty>
     </div >
       <pagination align="center" v-show="total > 0" :total="total" :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize" @pagination="getClassPage" />
-    <!-- <div class="btn">
-      <el-button type="primary" v-if="classifyResult.length >= 30" @click="jiazai">加载更多</el-button>
-    </div> -->
   </div>
 </template>
 
