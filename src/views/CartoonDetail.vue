@@ -16,7 +16,8 @@
             <i class="el-icon-price-tag"></i>&nbsp;{{ styles }}
           </div>
           <div class="rt-total" v-if="details.total">
-            <i class="el-icon-notebook-1"></i>&nbsp;更新至 {{ details.total }} 话
+            <i class="el-icon-notebook-1"></i>&nbsp;更新至
+            {{ details.total }} 话
           </div>
           <div class="rt-time">
             <i class="el-icon-date"></i>&nbsp;{{ details.renewal_time }}
@@ -26,16 +27,23 @@
             <!-- <div>开始阅读 第一话</div>
           <div><i class="el-icon-star-off"></i> 追漫</div> -->
 
-            <el-button type="primary" @click="
-              getId(
-                comicId,
-                chapterlist[0][0].id,
-                chapterlist[0][0].short_title,
-                chapterlist[0][0].title
-              )
-              ">开始阅读 第一话</el-button>
+            <el-button
+              type="primary"
+              @click="
+                getId(
+                  comicId,
+                  chapterlist[0][0].id,
+                  chapterlist[0][0].short_title,
+                  chapterlist[0][0].title
+                )
+              "
+              >开始阅读 第一话</el-button
+            >
             <div class="btn" @click="getCollection">
-              <i class="el-icon-star-off" :class="collection ? 'el-icon-star-on' : 'el-icon-star-off'"></i>
+              <i
+                class="el-icon-star-off"
+                :class="collection ? 'el-icon-star-on' : 'el-icon-star-off'"
+              ></i>
               追漫
             </div>
           </div>
@@ -50,21 +58,35 @@
             <h2>章节列表</h2>
             <div class="chapter-btnlist">
               <div class="chapter-btn" v-for="(item, i) in chapterNum" :key="i">
-                <div class="btn" :class="activeBtn === i ? 'active' : 'btn'" @click="active(i)">
+                <div
+                  class="btn"
+                  :class="activeBtn === i ? 'active' : 'btn'"
+                  @click="active(i)"
+                >
                   {{ item.start }}-{{ item.end }}
                 </div>
               </div>
             </div>
             <div class="chapter-list">
-              <div class="chapter-list-item" v-for="(items, v) in chapterlist[activeBtn]" :key="v">
-                <el-tooltip class="item" effect="dark" :content="items.short_title + ' ' + items.title"
-                  placement="top-start">
-                  <div class="chapter-list-item-text" @click="
-              getId(comicId, items.id, items.short_title, items.title)
-              ">
+              <div
+                class="chapter-list-item"
+                v-for="(items, v) in chapterlist[activeBtn]"
+                :key="v"
+              >
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="items.short_title + ' ' + items.title"
+                  placement="top-start"
+                >
+                  <div
+                    class="chapter-list-item-text"
+                    @click="
+                      getId(comicId, items.id, items.short_title, items.title)
+                    "
+                  >
                     {{ items.short_title }}&nbsp; {{ items.title }}
                   </div>
-
                 </el-tooltip>
                 <div class="chapter-list-item-lock" v-if="items.is_locked">
                   <i class="el-icon-lock"></i>
@@ -76,18 +98,26 @@
             <h2>评论</h2>
             <div class="comment-top">
               <div class="comment-top-lt">
-                <img src="https://static.hdslb.com/images/member/noface.gif" alt="" />
+                <img
+                  src="https://static.hdslb.com/images/member/noface.gif"
+                  alt=""
+                />
               </div>
               <div class="comment-top-cnt">
                 <div>
-                  请先&nbsp;<el-button type="primary">登录</el-button>&nbsp;&nbsp;后发表评论 (・ω・)
+                  请先&nbsp;<el-button type="primary">登录</el-button
+                  >&nbsp;&nbsp;后发表评论 (・ω・)
                 </div>
               </div>
               <div class="comment-top-rt">发表评论</div>
             </div>
             <div class="comment-cnt">
               <div class="comment-cnt-list">
-                <div class="comment-cnt-list-item" v-for="(item, i) in comment" :key="i">
+                <div
+                  class="comment-cnt-list-item"
+                  v-for="(item, i) in comment"
+                  :key="i"
+                >
                   <div class="item-lt">
                     <img :src="item.member.avatar" alt="" />
                   </div>
@@ -100,7 +130,12 @@
               </div>
             </div>
             <div class="btn">
-              <el-pagination background layout="prev, pager, next" :total="1000" @current-change="handleCurrentChange">
+              <el-pagination
+                background
+                layout="prev, pager, next"
+                :total="1000"
+                @current-change="handleCurrentChange"
+              >
               </el-pagination>
             </div>
           </div>
@@ -111,12 +146,18 @@
               <h2>更多推荐</h2>
             </div>
             <div>
-              <el-button type="primary" round plain @click="goClassify">更多<i
-                  class="el-icon-arrow-right"></i></el-button>
+              <el-button type="primary" round plain @click="goClassify"
+                >更多<i class="el-icon-arrow-right"></i
+              ></el-button>
             </div>
           </div>
           <div class="rt-list">
-            <div class="rt-list-item" v-for="(item, i) in recomm" :key="i" v-if="i < 5">
+            <div
+              class="rt-list-item"
+              v-for="(item, i) in recomm"
+              :key="i"
+              v-if="i < 5"
+            >
               <div class="item-img" @click="changeId(item.id)">
                 <img :src="item.vertical_cover" alt="" />
               </div>
@@ -135,6 +176,7 @@
 </template>
 
 <script>
+import { getComicDetail, getRecomm, getReplyMain } from "@/api/comics";
 export default {
   name: "cartoondetail",
   data() {
@@ -183,21 +225,14 @@ export default {
   methods: {
     //漫画详情
     getCartoonDetail(comicId) {
-      //发起请求
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/ComicDetail",
-        params: {
-          comicId,
-        },
-      })
-        .then((result) => {
-          this.details = result.data.data;
-          this.author = result.data.data.author_name[0];
-          this.styles = result.data.data.styles[0];
-          let ep_list = result.data.data.ep_list.reverse();
+      let params = {
+        comicId,
+      };
+      getComicDetail(params).then((result) => {
+          this.details = result.data;
+          this.author = result.data.author_name[0];
+          this.styles = result.data.styles[0];
+          let ep_list = result.data.ep_list.reverse();
           this.listlength = ep_list.length;
           for (let index = 0; index < ep_list.length; index += 50) {
             this.chapterNum.push({
@@ -207,7 +242,7 @@ export default {
             this.chapterlist.push(ep_list.slice(index, index + 50));
           }
         })
-        .catch((err) => { });
+        .catch((err) => {});
     },
     //点击收藏
     getCollection() {
@@ -228,22 +263,12 @@ export default {
     },
     //更多推荐
     getRecomm(comicId) {
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/MoreRecommend",
-        params: {
-          comicId,
-        },
-      })
-        .then((result) => {
-          // console.log("result==>", result);
-          // for (let i = 1; i < 6; i++) {
-          //   this.recomm.push(result.data.data.recommend_comics[i]);
-          // }
-          this.recomm = result.data.data.recommend_comics;
-          console.log('this.recomm', this.recomm);
+      let params = {
+        comicId,
+      };
+      getRecomm(params).then((result) => {
+          this.recomm = result.data.recommend_comics;
+          console.log("this.recomm", this.recomm);
         })
         .catch((err) => {
           console.log("err==>", err);
@@ -283,20 +308,13 @@ export default {
     },
     //评论
     getComment(next) {
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/ReplyMain",
-        params: {
-          oid: this.comicId,
+      let params = {
+        oid: this.comicId,
           ps: 10,
           next,
-        },
-      })
-        .then((result) => {
-          console.log("result.data.data.replies==>", result.data.data.replies);
-          this.comment = result.data.data.replies;
+      };
+      getReplyMain(params).then((result) => {
+          this.comment = result.data.replies;
         })
         .catch((err) => {
           console.log("err==>", err);
@@ -336,7 +354,6 @@ export default {
 
   h2 {
     .text_overflow;
-
   }
 
   .cartoondetail-content {
@@ -439,8 +456,6 @@ export default {
 
         h2 {
           margin-left: 20px;
-
-
         }
 
         .chapter1 {
@@ -468,12 +483,11 @@ export default {
                 background-color: #f5f7f8;
                 border-radius: 20px;
                 cursor: pointer;
-                &.active,&:hover {
-                background-color: rgb(186, 240, 231);
+                &.active,
+                &:hover {
+                  background-color: rgb(186, 240, 231);
+                }
               }
-              }
-
-              
             }
           }
 
@@ -499,14 +513,12 @@ export default {
               display: flex;
               cursor: pointer;
 
-
               &:last-child:nth-child(4n - 1) {
                 margin-right: calc(24% + 4% / 3);
               }
 
               &:last-child:nth-child(4n - 2) {
                 margin-right: calc(48% + 8% / 3);
-
               }
 
               .chapter-list-item-text {
@@ -579,7 +591,6 @@ export default {
             display: flex;
             align-items: center;
 
-
             .comment-cnt-list {
               .comment-cnt-list-item {
                 display: flex;
@@ -595,18 +606,15 @@ export default {
                 }
 
                 .item-rt {
-
                   .username {
                     color: #6d757a;
                     margin-bottom: 5px;
                   }
 
                   .text {
-
                     margin-bottom: 10px;
                     // margin-right: 20px;
                     // .text_overflow(3);
-
                   }
 
                   .time {
@@ -669,7 +677,6 @@ export default {
             }
 
             .item-text {
-
               // padding-left: 10px;
               .title {
                 display: -webkit-box;

@@ -1,14 +1,24 @@
 <template>
   <div class="classify">
     <div class="classify-top">
-      <div class="classify-top-list" v-for="(items, index) in classifys" :key="index" :class="items.type">
+      <div
+        class="classify-top-list"
+        v-for="(items, index) in classifys"
+        :key="index"
+        :class="items.type"
+      >
         <div class="classify-top-list-item a1">
           {{ index === 0 ? "题材" : "" }}{{ index === 1 ? "地区" : ""
           }}{{ index === 2 ? "进度" : "" }}{{ index === 3 ? "排序" : ""
           }}{{ index === 4 ? "收费" : "" }}
         </div>
-        <div class="classify-top-list-item" v-for="(item, i) in items.list" :key="i"
-          @click="active(items.type, item.id, $event)" :class="{ active: i === 0 }">
+        <div
+          class="classify-top-list-item"
+          v-for="(item, i) in items.list"
+          :key="i"
+          @click="activeCondition(items.type, item.id, '', $event)"
+          :class="{ active: i === 0 }"
+        >
           {{ item.name }}
         </div>
       </div>
@@ -17,15 +27,24 @@
       <comicList :list.sync="classifyResult"></comicList>
     </div>
     <div class="empty">
-      <el-empty v-if="classifyResult.length == 0" description="暂无数据"></el-empty>
-    </div >
-      <pagination align="center" v-show="total > 0" :total="total" :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize" @pagination="getClassPage" />
+      <el-empty
+        v-if="classifyResult.length == 0"
+        description="暂无数据"
+      ></el-empty>
+    </div>
+    <pagination
+      align="center"
+      v-show="total > 0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getClassPage"
+    />
   </div>
 </template>
 
 <script>
-import { ClassPage } from "@/api/comics";
+import { ClassPage, getClassify } from "@/api/comics";
 export default {
   name: "classify",
   data() {
@@ -34,47 +53,51 @@ export default {
       xuan: [],
       classifyResult: [],
       pageSize: 39,
-      total:100,
+      total: 100,
       classifyslist: [],
       queryParams: {
-        styleId: '',
-        areaId: '',
-        isFinish: '',
-        order: '',
-        isFree: '',
+        styleId: "",
+        areaId: "",
+        isFinish: "",
+        order: "",
+        isFree: "",
         pageNum: 1,
         pageSize: 10,
       },
+      classID: this.$store.state.classID ? this.$store.state.classID : -1,
     };
   },
-  created() {
-    this.xuan.styles = this.$route.params.styleId;
-    if (this.xuan.styles) {
-      console.log("this.xuan.styles==>", this.xuan.styles);
-      this.getClassPage(this.xuan.styles);
-    } else {
-      this.getClassPage();
+  watch: {
+    getclassID(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.queryParams.styleId = newVal;
+        this.activeCondition("styles", this.queryParams.styleId);
+      }
+    },
+  },
+  computed: {
+    getclassID() {
+      return this.$store.state.classID;
+    },
+  },
+  created() {},
+
+  async mounted() {
+    this.getClassPage();
+    let list = await this.getClassify();
+    this.queryParams.styleId = this.classID;
+    if (this.queryParams.styleId != -1) {
+      this.activeCondition("styles", this.queryParams.styleId, list);
     }
-
-    this.getClassify();
-
-    this.classifys.forEach((ele, i) => {
-      console.log(ele);
-    });
   },
 
   methods: {
     //获取分类列表
     getClassify() {
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/AllLabel",
-      })
-        .then((result) => {
+      return new Promise((resolve, reject) => {
+        getClassify().then((result) => {
           let arr = { id: -1, name: "全部" };
-          let a = result.data.data;
+          let a = result.data;
           let i = 0;
           for (const key in a) {
             if (key != "orders") {
@@ -82,6 +105,7 @@ export default {
             }
             this.classifys.push({ classifysId: i++, type: key, list: a[key] });
           }
+
           this.classifys.forEach((ele) => {
             if (ele.type == "orders") {
               ele.classifysId = 4;
@@ -90,24 +114,37 @@ export default {
               ele.classifysId = 3;
             }
           });
-          function sortArr(a, b) {
-            return a.classifysId - b.classifysId;
-          }
-          this.classifys.sort(sortArr);
-        })
-        .catch((err) => {
-          console.log("err==>", err);
+          resolve(this.classifys);
         });
+      });
     },
     //点击切换条件
-    active(type, id, event) {
+    activeCondition(type, id, list, event) {
       let active = document.querySelectorAll(
         `.${type}>.classify-top-list-item`
       );
       active.forEach((v) => {
         v.classList.remove("active");
       });
-      event.srcElement.classList.add("active");
+      if (event) {
+        event.srcElement.classList.add("active");
+      }
+      if (list) {
+        list[0].list.forEach((ele, i) => {
+          if (ele.id == id) {
+            active[i + 1].classList.add("active");
+            return (this.xuan[type] = id);
+          }
+        });
+      }
+      if (this.classifys[0]) {
+        this.classifys[0].list.forEach((ele, i) => {
+          if (ele.id == id) {
+            active[i + 1].classList.add("active");
+            return (this.xuan[type] = id);
+          }
+        });
+      }
       if (type) {
         this.xuan[`${type}`] = id;
         this.queryParams.styleId = this.xuan.styles;
@@ -127,34 +164,12 @@ export default {
     //分类筛选结果列表
     getClassPage(styleId, areaId, isFinish, isFree, order) {
       this.classifyResult = [];
-      ClassPage(this.queryParams).then(res=>{
+      ClassPage(this.queryParams).then((res) => {
         this.classifyResult = res.data;
-
-      })
-      //发起请求
-      // this.axios({
-      //   method: "get",
-      //   url: "https://apis.netstart.cn/bcomic/ClassPage",
-      //   params: {
-      //     styleId,
-      //     areaId,
-      //     isFinish,
-      //     order,
-      //     pageNum: 1,
-      //     pageSize: this.pageSize,
-      //     isFree,
-      //   },
-      // })
-      //   .then((result) => {
-      //     this.classifyResult = result.data.data;
-      //   })
-      //   .catch((err) => {
-      //     console.log("err==>", err);
-      //   });
+      });
     },
     //传递漫画的id
     getId(comicId) {
-      // console.log("comicId ==> ", comicId);
       this.$router.push({ name: "cartoondetail", params: { comicId } });
     },
     /** 更多加载 */
@@ -214,7 +229,7 @@ export default {
         width: 19%;
         margin-right: 1.25%;
         margin-bottom: 30px;
-        &:nth-child(5n){
+        &:nth-child(5n) {
           margin-right: 0;
         }
         .classify-result-list-item-img {

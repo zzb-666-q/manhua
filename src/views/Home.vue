@@ -21,29 +21,12 @@
         >
           {{ item.name }}
         </div>
-        <div class="home-classifys-list-item" @click="goClassify">全部</div>
+        <div class="home-classifys-list-item" @click="goClassify(-1)">全部</div>
       </div>
     </div>
     <div class="home-commend">
       <h2>为你推荐</h2>
-    <comicList :list.sync="commend"></comicList>
-
-      <!-- <div class="home-commend-list">
-        <div
-          class="home-commend-list-item"
-          v-for="(item, i) in commend"
-          :key="i"
-          @click="getId(item.comic_id)"
-        >
-          <div class="home-commend-list-item-img">
-            <img :src="item.vertical_cover" alt="" />
-          </div>
-          <div class="text">{{ item.title }}</div>
-          <div class="type" v-for="(items, index) in item.styles" :key="index">
-            {{ items.name }}
-          </div>
-        </div>
-      </div> -->
+      <comicList :list.sync="commend"></comicList>
     </div>
     <div class="home-hot">
       <div class="home-hot-top">
@@ -76,24 +59,7 @@
           </el-row>
         </div>
       </div>
-    <comicList :list.sync="hotlist"></comicList>
-
-      <!-- <div class="home-hot-list">
-        <div
-          class="home-hot-list-item"
-          v-for="(item, i) in hotlist"
-          :key="i"
-          @click="getId(item.comic_id)"
-        >
-          <div class="home-hot-list-item-img">
-            <img :src="item.vertical_cover" alt="" />
-          </div>
-          <div class="text">{{ item.title }}</div>
-          <div class="type">
-            {{ item.recommendation }}
-          </div>
-        </div>
-      </div> -->
+      <comicList :list.sync="hotlist"></comicList>
     </div>
 
     <!-- 玄幻 -->
@@ -106,30 +72,13 @@
         </div>
         <div class="home-classify-top-right">
           <el-row>
-            <el-button type="primary" round plain @click="goClassify"
+            <el-button type="primary" round plain @click="goClassify(-1)"
               >更多<i class="el-icon-arrow-right"></i
             ></el-button>
           </el-row>
         </div>
       </div>
       <comicList :list.sync="fantasy"></comicList>
-
-      <!-- <div class="home-classify-list">
-        <div
-          class="home-classify-list-item"
-          v-for="(item, i) in fantasy"
-          :key="i"
-          @click="getId(item.season_id)"
-        >
-          <div class="home-classify-list-item-img">
-            <img :src="item.vertical_cover" alt="" />
-          </div>
-          <div class="text">{{ item.title }}</div>
-          <div class="type">
-            更新至&nbsp;&nbsp;{{ item.last_short_title }}&nbsp;话
-          </div>
-        </div>
-      </div> -->
     </div>
     <!-- 武侠仙侠 -->
     <div class="home-classify">
@@ -141,30 +90,13 @@
         </div>
         <div class="home-classify-top-right">
           <el-row>
-            <el-button type="primary" round plain @click="goClassify"
+            <el-button type="primary" round plain @click="goClassify(-1)(-1)"
               >更多<i class="el-icon-arrow-right"></i
             ></el-button>
           </el-row>
         </div>
       </div>
       <comicList :list.sync="martialArts"></comicList>
-      
-      <!-- <div class="home-classify-list">
-        <div
-          class="home-classify-list-item"
-          v-for="(item, i) in martialArts"
-          :key="i"
-          @click="getId(item.season_id)"
-        >
-          <div class="home-classify-list-item-img">
-            <img :src="item.vertical_cover" alt="" />
-          </div>
-          <div class="text">{{ item.title }}</div>
-          <div class="type">
-            更新至&nbsp;&nbsp;{{ item.last_short_title }}&nbsp;话
-          </div>
-        </div>
-      </div> -->
     </div>
     <!-- 都市生活 -->
     <div class="home-classify">
@@ -176,35 +108,25 @@
         </div>
         <div class="home-classify-top-right">
           <el-row>
-            <el-button type="primary" round plain @click="goClassify"
+            <el-button type="primary" round plain @click="goClassify(-1)"
               >更多<i class="el-icon-arrow-right"></i
             ></el-button>
           </el-row>
         </div>
       </div>
       <comicList :list.sync="urban"></comicList>
-
-      <!-- <div class="home-classify-list">
-        <div
-          class="home-classify-list-item"
-          v-for="(item, i) in urban"
-          :key="i"
-          @click="getId(item.season_id)"
-        >
-          <div class="home-classify-list-item-img">
-            <img :src="item.vertical_cover" alt="" />
-          </div>
-          <div class="text">{{ item.title }}</div>
-          <div class="type">
-            更新至&nbsp;&nbsp;{{ item.last_short_title }}&nbsp;话
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
 
 <script>
+import {
+  getBanner,
+  getClassify,
+  getCommend,
+  getHotlist,
+  ClassPage,
+} from "@/api/comics";
 export default {
   name: "home",
   data() {
@@ -273,15 +195,10 @@ export default {
   methods: {
     //获取轮播图
     bannerlist() {
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/Banner",
-      })
+      getBanner()
         .then((result) => {
-          // console.log("result.data.data==>", result.data.data);
-          this.banners = result.data.data;
+          // console.log("result.data==>", result.data);
+          this.banners = result.data;
         })
         .catch((err) => {
           console.log("err==>", err);
@@ -289,15 +206,9 @@ export default {
     },
     //获取分类列表
     getClassify() {
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/AllLabel",
-      })
+      getClassify()
         .then((result) => {
-          // console.log("result==>", result);
-          this.classifys = result.data.data.styles;
+          this.classifys = result.data.styles;
         })
         .catch((err) => {
           console.log("err==>", err);
@@ -305,15 +216,10 @@ export default {
     },
     //获取为你推荐列表
     getCommend() {
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/HomeRecommend",
-      })
+      getCommend()
         .then((result) => {
-          // console.log("result.data.data.list==>", result.data.data.list);
-          this.commend = result.data.data.list;
+          // console.log("result.data.list==>", result.data.list);
+          this.commend = result.data.list;
         })
         .catch((err) => {
           console.log("err==>", err);
@@ -321,22 +227,15 @@ export default {
     },
     //热门速递列表
     getHotlist(id, pageNum, pageSize) {
-      //https://apis.netstart.cn/bcomic/GetClassPageSixComics?id=1041&pageNum=1&pageSize=5
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/GetClassPageSixComics",
-        params: {
-          id,
-          pageNum,
-          pageSize,
-          isAll: 1,
-        },
-      })
+      let params = {
+        id,
+        pageNum,
+        pageSize,
+        isAll: 1,
+      };
+      getHotlist(params)
         .then((result) => {
-          // console.log("result==>", result);
-          this.hotlist = result.data.data.roll_six_comics;
+          this.hotlist = result.data.roll_six_comics;
         })
         .catch((err) => {
           console.log("err==>", err);
@@ -351,7 +250,6 @@ export default {
     //点击换一批
     changeHotlist() {
       this.pageNum++;
-      // console.log("this.pageNum==>", this.pageNum);
       if (this.pageNum > 6) {
         this.pageNum = 1;
       }
@@ -361,28 +259,21 @@ export default {
     },
     //获取都市，玄幻等的列表
     getClassifyList(styleId, pageNum, pageSize) {
-      //https://apis.netstart.cn/bcomic/ClassPage?styleId=1002&pageNum=1&pageSize=10
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/ClassPage",
-        params: {
-          styleId,
-          pageNum,
-          pageSize,
-        },
-      })
+      let params = {
+        styleId,
+        pageNum,
+        pageSize,
+      };
+      ClassPage(params)
         .then((result) => {
-          // console.log("result.data.data==>", result.data.data);
           if (styleId === 1016) {
-            this.fantasy = result.data.data;
+            this.fantasy = result.data;
           }
           if (styleId === 1092) {
-            this.martialArts = result.data.data;
+            this.martialArts = result.data;
           }
           if (styleId === 1002) {
-            this.urban = result.data.data;
+            this.urban = result.data;
           }
         })
         .catch((err) => {
@@ -391,23 +282,14 @@ export default {
     },
     //传递漫画的id
     getId(comicId) {
-      // console.log("comicId ==> ", comicId);
       this.$router.push({ name: "cartoondetail", params: { comicId } });
     },
     //前往分类页面
     goClassify(styleId) {
+      this.$router.push({ name: "classify" });
       if (styleId) {
-        this.$router.push({ name: "classify", params: { styleId } });
-        // console.log(styleId);
-        setTimeout(() => {
-          // this.$router.go(0);
-        }, 1000);
-      } else {
-        this.$router.push({ name: "classify" });
-        setTimeout(() => {
-          // this.$router.go(0);
-        }, 1000);
-      }
+        this.$store.commit("setClassID", styleId);
+      } 
     },
   },
 };
@@ -436,9 +318,10 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      // padding-left: 10px;
-      overflow: hidden;
-      // overflow-x: auto;
+      /* padding-left: 10px;
+       overflow: scroll;*/
+      overflow-x: auto;
+      overflow-y: hidden;
       flex-direction: space-between;
 
       .home-classifys-list-item {
@@ -483,16 +366,14 @@ export default {
             width: 100%;
           }
         }
-        .text{
+        .text {
           .text_overflow;
-
         }
         .type {
           margin-top: 6px;
           font-size: 15px;
           color: #999;
           .text_overflow;
-
         }
       }
 
@@ -528,7 +409,7 @@ export default {
 
           .hot-top-list-item {
             margin-right: 25px;
-            // .text_overflow;
+            /* .text_overflow; */
           }
         }
       }
@@ -541,7 +422,7 @@ export default {
     .home-hot-list {
       width: 100%;
       display: flex;
-      
+
       flex-wrap: wrap;
 
       .home-hot-list-item {
@@ -559,16 +440,14 @@ export default {
             width: 100%;
           }
         }
-        .text{
+        .text {
           .text_overflow;
-
         }
         .type {
           margin-top: 6px;
           font-size: 15px;
           color: #999;
           .text_overflow;
-
         }
       }
 
@@ -613,7 +492,6 @@ export default {
         }
         // .text_overflow(2);
 
-
         .home-classify-list-item-img {
           width: 100%;
 
@@ -621,9 +499,8 @@ export default {
             width: 100%;
           }
         }
-        .text{
+        .text {
           .text_overflow;
-
         }
 
         .type {
@@ -631,7 +508,6 @@ export default {
           font-size: 15px;
           color: #999;
           .text_overflow;
-
         }
       }
 
@@ -642,17 +518,17 @@ export default {
   }
 }
 
-// ::--webkit-scrollbar {
-//   width: 4px;
-//   height: 1px;
-//   color: #000;
-//   display:none;
-// }
-// ::--webkit-scrollbar-thumb {
-//   border-radius: 5px;
-//   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-//   background: rgba(0, 0, 0, 0.2);
-// }
+/* ::--webkit-scrollbar {
+   width: 4px;
+   height: 1px;
+   color: #000;
+   display:none;
+ }
+ ::--webkit-scrollbar-thumb {
+   border-radius: 5px;
+   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+   background: rgba(0, 0, 0, 0.2);
+ }*/
 .el-carousel__item {
   img {
     width: 100%;

@@ -179,6 +179,7 @@
 </template>
 
 <script>
+import { getImageIndex, getImageToken, getComicDetail } from "@/api/comics";
 export default {
   name: "comiccontent",
   data() {
@@ -211,7 +212,7 @@ export default {
       },
       //隐藏图片的数量
       hideImgsNum: 10,
-      isStart:true,
+      isStart: true,
     };
   },
   created() {
@@ -237,19 +238,12 @@ export default {
   methods: {
     //获取图片地址列表
     getPictures(epId) {
-      //发起请求
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/GetImageIndex",
-        params: {
-          epId,
-        },
-      })
-        .then((result) => {
-          // console.log("result.data.data.images==>", result.data.data.images);
-          result.data.data.images.forEach((v) => {
+      let params = {
+        epId,
+      };
+      getImageIndex(params).then(res => {
+          // console.log("res.data.images==>", res.data.images);
+          res.data.images.forEach((v) => {
             this.picturelist.push(`https://manga.hdslb.com${v.path}`);
           });
 
@@ -260,18 +254,12 @@ export default {
     },
     //图片
     getimg(urls) {
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/ImageToken",
-        params: {
-          urls: JSON.stringify(urls),
-        },
-      })
-        .then((result) => {
+      let params = {
+        urls: JSON.stringify(urls),
+      };
+      getImageToken(params).then(res => {
           // console.log("result==>", result);
-          this.imgs = result.data.data;
+          this.imgs = res.data;
         })
         .catch((err) => {
           console.log("err==>", err);
@@ -279,20 +267,13 @@ export default {
     },
     //获取漫画目录id
     getComicId(comicId) {
-      //发起请求
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/ComicDetail",
-        params: {
-          comicId,
-        },
-      })
-        .then((result) => {
-          // console.log("result.data==>", result.data);
-          this.comictitle = result.data.data.title;
-          this.ep_list = result.data.data.ep_list.reverse();
+      let params = {
+        comicId,
+      }
+      getComicDetail(params).then(res => {
+          // console.log("res.data==>", res.data);
+          this.comictitle = res.data.title;
+          this.ep_list = res.data.ep_list.reverse();
           // console.log("this.ep_list", this.ep_list);
           this.look();
         })

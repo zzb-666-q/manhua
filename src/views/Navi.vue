@@ -4,42 +4,70 @@
       <div class="navi-nav-content">
         <div class="navi-nav-left">
           <div class="logo">
-            <img src="https://i0.hdslb.com/bfs/manga-static/manga-pc/static/img/99e0a7fae4c4f.png" alt="" />
+            <img
+              src="https://i0.hdslb.com/bfs/manga-static/manga-pc/static/img/99e0a7fae4c4f.png"
+              alt=""
+            />
           </div>
           <div class="text">好看漫画</div>
-          <div class="navi-nav-item" v-for="(item, i) in navList" :key="i" @click="active(i, item.routeName)"
-            :class="activeIndex === i ? 'active' : 'navi-nav-item'" :to="{ name: item.routeName }">
+          <div
+            class="navi-nav-item"
+            v-for="(item, i) in navList"
+            :key="i"
+            @click="active(i, item.routeName)"
+            :class="activeIndex === i ? 'active' : 'navi-nav-item'"
+            :to="{ name: item.routeName }"
+          >
             {{ item.name }}
           </div>
         </div>
         <div class="navi-nav-right">
           <div class="right-lt">
             <div class="search">
-              <el-input placeholder="请输入内容" v-model="value"  class="input-with-select">
-               <el-button  slot="append" type="primary" icon="el-icon-search" @click="Search"></el-button>
+              <el-input
+                placeholder="请输入内容"
+                v-model="value"
+                class="input-with-select"
+              >
+                <el-button
+                  slot="append"
+                  type="primary"
+                  icon="el-icon-search"
+                  @click="Search"
+                ></el-button>
               </el-input>
             </div>
           </div>
           <div class="right-rt">
             <div class="login" v-if="isLogin == false">
               <div type="text" @click="dialogLogin = true">登录</div>
-
-
             </div>
             <div class="register" v-if="isLogin == false">
               <div type="text" @click="dialogRegister = true">注册</div>
-
             </div>
           </div>
           <div class="history" v-if="isLogin">历史</div>
           <div class="chase" v-if="isLogin">追漫</div>
-          <div class="islogin" v-if="isLogin" @mouseenter="hover" @mouseleave="hover2">
+          <div
+            class="islogin"
+            v-if="isLogin"
+            @mouseenter="hover"
+            @mouseleave="hover2"
+          >
             <div class="user-img">
-              <img src="https://img2.baidu.com/it/u=2645019514,3718632371&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500"
-                alt="" />
+              <img
+                src="https://img2.baidu.com/it/u=2645019514,3718632371&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500"
+                alt=""
+              />
             </div>
           </div>
-          <div class="islogin-box" v-if="isLogin" :style="{ display: display }" @mouseenter="hover" @mouseleave="hover2">
+          <div
+            class="islogin-box"
+            v-if="isLogin"
+            :style="{ display: display }"
+            @mouseenter="hover"
+            @mouseleave="hover2"
+          >
             <div class="user">
               <div class="lt">用户</div>
               <div class="rt">{{ username }}</div>
@@ -96,7 +124,10 @@
         <div class="nav-foot-top-left">
           <div class="left-cnt">
             <div class="logo">
-              <img src="https://i0.hdslb.com/bfs/manga-static/manga-pc/static/img/99e0a7fae4c4f.png" alt="" />
+              <img
+                src="https://i0.hdslb.com/bfs/manga-static/manga-pc/static/img/99e0a7fae4c4f.png"
+                alt=""
+              />
             </div>
             <div class="text">好看漫画</div>
           </div>
@@ -160,13 +191,31 @@
         </div>
       </div>
     </div>
-    <el-dialog title="登录" width="30%" :modal="false" :visible.sync="dialogLogin" center>
-      <el-form :label-position="labelPosition" label-width="40px" :model="Login">
+    <el-dialog
+      title="登录"
+      width="30%"
+      :modal="false"
+      :visible.sync="dialogLogin"
+      center
+    >
+      <el-form
+        :label-position="labelPosition"
+        label-width="40px"
+        :model="Login"
+      >
         <el-form-item label="用户">
-          <el-input placeholder="请输入用户名" v-model="Login.name" width="50px"></el-input>
+          <el-input
+            placeholder="请输入用户名"
+            v-model="Login.name"
+            width="50px"
+          ></el-input>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input type="password" placeholder="请输入密码" v-model="Login.password"></el-input>
+          <el-input
+            type="password"
+            placeholder="请输入密码"
+            v-model="Login.password"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -174,16 +223,38 @@
         <el-button type="primary" @click="login()">登 录</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="注册" width="30%" :modal="false" :visible.sync="dialogRegister" center>
-      <el-form :label-position="labelPosition" label-width="80px" :model="Register">
+    <el-dialog
+      title="注册"
+      width="30%"
+      :modal="false"
+      :visible.sync="dialogRegister"
+      center
+    >
+      <el-form
+        :label-position="labelPosition"
+        label-width="80px"
+        :model="Register"
+      >
         <el-form-item label="用户">
-          <el-input placeholder="请输入用户名" v-model="Register.name" width="50px"></el-input>
+          <el-input
+            placeholder="请输入用户名"
+            v-model="Register.name"
+            width="50px"
+          ></el-input>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input type="password" placeholder="请输入密码" v-model="Register.password"></el-input>
+          <el-input
+            type="password"
+            placeholder="请输入密码"
+            v-model="Register.password"
+          ></el-input>
         </el-form-item>
         <el-form-item label="确认密码">
-          <el-input type="password" placeholder="请再次输入密码" v-model="Register.repassword"></el-input>
+          <el-input
+            type="password"
+            placeholder="请再次输入密码"
+            v-model="Register.repassword"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -245,6 +316,18 @@ export default {
       username: "",
     };
   },
+  watch: {
+    routerName(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.getrouterName();
+      }
+    },
+  },
+  computed: {
+    routerName() {
+      return this.$route.name;
+    },
+  },
   created() {
     this.getrouterName();
     let loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
@@ -300,7 +383,7 @@ export default {
         .then((_) => {
           done();
         })
-        .catch((_) => { });
+        .catch((_) => {});
     },
     //登录
     login() {
@@ -420,7 +503,6 @@ export default {
       margin-bottom: 20px;
       // display: flex;
       // justify-content: space-between;
-
 
       .navi-nav-left {
         // width: 100%;
@@ -663,8 +745,6 @@ export default {
     }
   }
 }
-
-
 
 .el-dialog {
   z-index: 1;

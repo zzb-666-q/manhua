@@ -45,6 +45,7 @@
 </template>
 
 <script>
+  import { getRankInfo } from "@/api/comics";
 export default {
   name: "rankinglist",
   data() {
@@ -110,7 +111,6 @@ export default {
     };
   },
   created() {
-    console.log("tablist[i]", this.tablist[this.activeIndex]);
     this.get(this.tablist[0].id);
   },
   methods: {
@@ -120,19 +120,13 @@ export default {
     },
     //获取排行榜
     get(id) {
-      this.axios({
-        //请求类型
-        method: "get",
-        //请求路径
-        url: "https://apis.netstart.cn/bcomic/GetRankInfo",
-        params: {
-          id,
-          pageNum: 2,
-        },
-      })
-        .then((result) => {
+      let params = {
+        id,
+        pageNum: 2,
+      };
+      getRankInfo(params).then((result) => {
           console.log("result==>", result);
-          this.comiclist = result.data.data.list;
+          this.comiclist = result.data.list;
         })
         .catch((err) => {
           console.log("err==>", err);
@@ -148,7 +142,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
 .rankinglist {
   width: 100%;
   height: 100%;
@@ -195,20 +188,19 @@ export default {
           // width: 250px;
           // margin-right: 20px;
           margin-bottom: 20px;
-          &:nth-child(5n){
+          &:nth-child(5n) {
             margin-right: 0;
           }
           .rt-list-item-img {
             width: 100%;
-           
           }
-          .text{
+          .text {
             .text_overflow;
             margin-bottom: 10px;
           }
-          .type{
+          .type {
             font-size: 16px;
-            color: rgba(0, 0, 0, 0.7)
+            color: rgba(0, 0, 0, 0.7);
           }
         }
       }
